@@ -1,0 +1,18 @@
+{
+    "name": "npmweb/haivision_player_plugin",
+    "type": "component",
+    "require": {
+        "robloach/component-installer": "*",
+    },
+    "extra": {
+        "component": {
+            "scripts": [
+                "npm.hvplayer.js"
+            ],
+            "shim": {
+                "deps": ["backbone", "jquery"],
+                "exports": "npm.hvplayer"
+            }
+        }
+    }
+}
