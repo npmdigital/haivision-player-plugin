@@ -1,5 +1,5 @@
 {
-    "name": "npmweb/haivision_player_plugin",
+    "name": "npmweb/haivision-player-plugin",
     "type": "component",
     "require": {
         "robloach/component-installer": "*"
