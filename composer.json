@@ -2,7 +2,7 @@
     "name": "npmweb/haivision_player_plugin",
     "type": "component",
     "require": {
-        "robloach/component-installer": "*",
+        "robloach/component-installer": "*"
     },
     "extra": {
         "component": {
