@@ -1,5 +1,6 @@
 {
     "name": "npmweb/haivision-player-plugin",
+    "description": "jQuery plugin to make it super easy to drop in a haivision player on your site.",
     "type": "component",
     "require": {
         "robloach/component-installer": "*"
