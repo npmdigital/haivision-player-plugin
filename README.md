@@ -1,7 +1,7 @@
 havision_player_plugin
 ======================
 
-jQuery plugin to make it super easy to drop in a haivision player on your site. Just call it like a typical jquery plugin - use the jQuery selector for the DOM element that should contain the player, then pass in the parameters described below. 
+jQuery plugin to make it super easy to drop in a haivision player on your site. Just call it like a typical jquery plugin - use the jQuery selector for the DOM element that should contain the player, then pass in the parameters described below.
 
 By default the player wraps the haivsion iframe embed in a responsive div.
 
@@ -11,9 +11,9 @@ Usage
 If you know the Haivision Media ID (e.g. 3wDz6T35oJmC, NOT the guid), use this option:
 
 
-	var playerArgs = { 
-		playerId: 'Jodv123_sdj3Q', 
-		feedId: 'LaOasdfj1af17', 
+	var playerArgs = {
+		playerId: 'Jodv123_sdj3Q',
+		feedId: 'LaOasdfj1af17',
 		debug: true,
 		type: 'video',
 		params: {
@@ -35,12 +35,14 @@ If you only know the GUID (e.g. 64b6761a-f191-11e3-b115-991ec995921a), use this 
 
 Parameters
 -----
-|Param		|Default		|Description	
+|Param		|Default		|Description
 |-----------|---------------|-----------
 |accountId*	|*n/a* |Haivision Account Identifier
 |playerId*	|*n/a* |The ID of the Haivision Player to use
 |feedId*		|*n/a* |Only needed if using the by_guid method, Identifier for the Haivision feed to query for the media
 |wrap		|true  |If true, the player embed will be wrapped in divs that attempt to maintain aspect ratio and make it responsive
+|renderTemplate|callback|By default the plugin uses jQuery to build the iframe (and wrap it in a div if above param is true) and then set the element's HTML. If you want custom behavior then pass in a callback with signature renderTemplate($el, data).
+|renderError|callback|By default simply inserts an error message into the element. If you want custom behavior pass in a callback with signature renderError($el, msg).
 |width		|100%  |By default, tries to fill the parent container
 |height		|100%  |By default, tries to fill the parent container
 |debug	    |false |Set to true to output debugging info
