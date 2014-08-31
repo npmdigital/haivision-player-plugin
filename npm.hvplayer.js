@@ -44,7 +44,8 @@
             if ( base.params['mediaId'] ) {
                 base.log('gonna play the media with ID '+base.params.mediaId );
                 base.mediaId = base.params.mediaId;
-                base.options.renderTemplate( base.$el, $.extend({},base.options, { mediaId: base.mediaId }) );
+                var playerUrl = base.playerUrl(base.mediaId, base.options);
+                base.options.renderTemplate( base.$el, $.extend({},base.options, { mediaId: base.mediaId, playerUrl: playerUrl }) );
            } else if ( base.params['guid'] ) {
                 var feedUrl = "http://feed.theplatform.com/f/"+base.options.accountId+"/"+base.options.feedId+"/?form=json&fields=title,content&fileFields=releases,contentType&releaseFields=pid&byGuid="+base.params.guid;
                 base.log("Get media info from the Guid, Feed URL: "+feedUrl);
@@ -71,7 +72,8 @@
                     if (mediaItem) {
                         base.mediaId = mediaItem.plfile$releases[0].plrelease$pid;
                         base.log('The media ID to play the '+mediaType+' is '+base.mediaId);
-                        base.options.renderTemplate( base.$el, $.extend({},base.options, { mediaId: base.mediaId }) );
+                        var playerUrl = base.playerUrl(base.mediaId, base.options);
+                        base.options.renderTemplate( base.$el, $.extend({},base.options, { mediaId: base.mediaId, playerUrl: playerUrl }) );
 
                     } else {
                         base.log('The media ID to play the '+mediaType+' was not found!');
@@ -81,6 +83,10 @@
                 });
 
             }
+        };
+
+        base.playerUrl = function(mediaId,opts) {
+          return "http://player.theplatform.com/p/" + opts.accountId + "/" + opts.playerId + "/embed/select/" + mediaId + opts.queryString;
         };
 
         base.log = function(s) {
@@ -100,9 +106,8 @@
         accountId: false, // REQUIRED
         playerId: false, // REQUIRED
         renderTemplate: function($el,data) {
-          console.log(data);
           var $iframe = $("<iframe>").attr({
-            src: "http://player.theplatform.com/p/" + data.accountId + "/" + data.playerId + "/embed/select/" + data.mediaId + data.queryString,
+            src: data.playerUrl,
             width: data.iframeWidth,
             height: data.iframeHeight,
             frameBorder: 0,
