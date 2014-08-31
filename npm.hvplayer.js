@@ -1,6 +1,6 @@
 /*!
  * jQuery plugin for haivision's video player
- * 
+ *
  * based on the jQuery namespaced 'Starter' plugin boilerplate by @dougneiner & @addyosmani
  * Licensed under the MIT license
  */
@@ -36,51 +36,51 @@
             base.options.iframeWidth = (base.options.width == 0) ? "100%" : base.options.width;
             base.options.iframeHeight = (base.options.height == 0) ? "100%" : base.options.height;
 
-            var tmpl2use = (base.options.wrap) ? base.options.template : base.options.templateNoWrapper;
-
             base.options.queryString = '';
-            if (!_.isEmpty(base.options.params)) {
+            if (!$.isEmptyObject(base.options.params)) {
                 base.options.queryString = '?params=' + escape( $.param(base.options.params) );
             }
 
             if ( base.params['mediaId'] ) {
                 base.log('gonna play the media with ID '+base.params.mediaId );
                 base.mediaId = base.params.mediaId;
-                base.renderTemplate( tmpl2use, $.extend({},base.options, { mediaId: base.mediaId }) ); 
+                base.options.renderTemplate( base.$el, $.extend({},base.options, { mediaId: base.mediaId }) );
            } else if ( base.params['guid'] ) {
                 var feedUrl = "http://feed.theplatform.com/f/"+base.options.accountId+"/"+base.options.feedId+"/?form=json&fields=title,content&fileFields=releases,contentType&releaseFields=pid&byGuid="+base.params.guid;
                 base.log("Get media info from the Guid, Feed URL: "+feedUrl);
                 $.getJSON( feedUrl, function(json) {
+                    if (json.entryCount == 0) {
+                      base.options.renderError( base.$el, "No media found with guid "+base.params.guid);
+                      return;
+                    }
                     var entry = json.entries[0];
                     base.log('** got the feed json for '+entry.title);
 
                     // get either the first video item or audio item
-                    var mediaType = _.has(base.options,'type') ? base.options.type : 'video';       
-                    var mediaItem = _.findWhere(entry.media$content, { plfile$contentType: mediaType });
+                    var mediaType = base.options.hasOwnProperty('type') ? base.options.type : 'video';
+                    var mediaItem = false;
+                    // iterate through media$content items until we find the right type
+                    for(var i=0;i<entry.media$content.length;i++) {
+                      var item = entry.media$content[i];
+                      var contentType = item.plfile$contentType;
+                      if (contentType == mediaType) {
+                        mediaItem = item;
+                        break;
+                      }
+                    }
                     if (mediaItem) {
                         base.mediaId = mediaItem.plfile$releases[0].plrelease$pid;
                         base.log('The media ID to play the '+mediaType+' is '+base.mediaId);
-                        base.renderTemplate( tmpl2use, $.extend({},base.options, { mediaId: base.mediaId }) );
+                        base.options.renderTemplate( base.$el, $.extend({},base.options, { mediaId: base.mediaId }) );
 
-                    } else { 
+                    } else {
                         base.log('The media ID to play the '+mediaType+' was not found!');
                         // how to handle an error?
                     }
-        
+
                 });
 
             }
-        };
-
-        base.renderTemplate = function(tmpl,data) {
-            if (typeof _ === 'undefined') {
-                $.getScript(base.options.underscoreJs,function() {
-                    base.$el.html( _.template( tmpl, data) );
-                });
-            } else {
-                base.$el.html( _.template(tmpl, data) );
-            }
-
         };
 
         base.log = function(s) {
@@ -99,16 +99,32 @@
     $.npm.hvplayer.defaultOptions = {
         accountId: false, // REQUIRED
         playerId: false, // REQUIRED
-        template: '<div style="position: relative; padding-bottom: <%= aspectReverse %>; height: 0px;">\
-                    <div style="position: absolute; top: 0px; left: 0px; height: 100%; width: 100%;">\
-                        <iframe src="http://player.theplatform.com/p/<%= accountId %>/<%= playerId %>/embed/select/<%= mediaId %><%= queryString %>" width="<%= iframeWidth %>" height="<%= iframeHeight %>" frameBorder="0" seamless="seamless" allowFullScreen></iframe>\
-                    </div>\
-                </div>',
-        templateNoWrapper: '<iframe src="http://player.theplatform.com/p/<%= accountId %>/<%= playerId %>/embed/select/<%= mediaId %><%= queryString %>" width="<%= iframeWidth %>" height="<%= iframeHeight %>" frameBorder="0" seamless="seamless" allowFullScreen></iframe>',
+        renderTemplate: function($el,data) {
+          console.log(data);
+          var $iframe = $("<iframe>").attr({
+            src: "http://player.theplatform.com/p/" + data.accountId + "/" + data.playerId + "/embed/select/" + data.mediaId + data.queryString,
+            width: data.iframeWidth,
+            height: data.iframeHeight,
+            frameBorder: 0,
+            seamless: "seamless",
+            allowFullScreen: "allowFullScreen"
+          });
+          if (data.wrap) {
+            $elem = $("<div>").attr({style:"position: relative; padding-bottom: " + data.aspectReverse +"; height: 0px;"});
+            $innerElem = $("<div>").attr({style:"position: absolute; top: 0px; left: 0px; height: 100%; width: 100%;"});
+            $innerElem.html($iframe);
+            $elem.html($innerElem);
+            $el.html( $elem );
+          } else {
+            $el.html( $iframe );
+          }
+        },
         wrap: true, // add the wrapping divs to keep aspect ratio and fill the parent container
+        renderError: function($el,msg) {
+          $el.append( $("<p>").html("An error occured loading the player: "+msg) );
+        },
         feedId: false, // only if using the by guid method
         pdkJs: "//pdk.theplatform.com/pdk/tpPdk.js",
-        underscoreJs: "//underscorejs.org/underscore-min.js",
         width: 0,
         height: 0,
         debug: false,
