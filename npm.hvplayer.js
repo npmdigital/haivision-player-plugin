@@ -86,7 +86,7 @@
         };
 
         base.playerUrl = function(mediaId,opts) {
-          return "http://player.theplatform.com/p/" + opts.accountId + "/" + opts.playerId + "/embed/select/" + mediaId + opts.queryString;
+          return "http://player.theplatform.com/p/" + opts.accountId + "/" + opts.playerId + "/embed/select/media/" + mediaId + opts.queryString;
         };
 
         base.log = function(s) {
