@@ -135,8 +135,7 @@
         debug: false,
         type: "video",
         params: {
-            form: 'html'
-        }
+        },
 
     };
 

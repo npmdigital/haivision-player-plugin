@@ -17,7 +17,6 @@ If you know the Haivision Media ID (e.g. 3wDz6T35oJmC, NOT the guid), use this o
 		debug: true,
 		type: 'video',
 		params: {
-			form: 'html',
 			affiliate: 'yourmove.is'
 		}
 	};
@@ -47,7 +46,7 @@ Parameters
 |height		|100%  |By default, tries to fill the parent container
 |debug	    |false |Set to true to output debugging info
 |type		|video |Used only when using by_guid - to specify which media to pull out of the feed response
-|params		|{form:'html'}|Query string parameters to add on to the end of the player URL - affiliate helps with reporting, so typically that would be the URL of your site or some identifier
+|params		|*n/a*|Query string parameters to add on to the end of the player URL - affiliate helps with reporting, so typically that would be the URL of your site or some identifier
 
 *required parameter
 
