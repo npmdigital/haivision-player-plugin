@@ -38,7 +38,7 @@
 
             base.options.queryString = '';
             if (!$.isEmptyObject(base.options.params)) {
-                base.options.queryString = '?params=' + escape( $.param(base.options.params) );
+                base.options.queryString = '?params=auto%3Dtrue%26bitrate%3D0~2000000%26' + escape( $.param(base.options.params) );
             }
 
             if ( base.params['mediaId'] ) {
